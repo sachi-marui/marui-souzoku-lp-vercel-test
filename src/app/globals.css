@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/*
+ * デザイントークン（design-reference.html / README.md の Design Tokens に準拠）
+ * Tailwind v4 は CSS ファースト設定のため、tailwind.config.ts ではなく
+ * ここでの @theme 定義から `bg-primary` `text-h2` `lp-md:` 等のユーティリティが
+ * 自動生成される。
+ */
+@theme {
+  /* Colors (OKLCH) */
+  --color-primary: oklch(0.58 0.16 240);
+  --color-primary-dark: oklch(0.44 0.15 240);
+  --color-blue-deep: oklch(0.38 0.13 240);
+  --color-accent: oklch(0.7 0.18 45);
+  --color-accent-dark: oklch(0.6 0.19 45);
+  --color-bg-white: oklch(0.99 0.002 240);
+  --color-bg-pale: oklch(0.965 0.016 235);
+  --color-bg-gray: oklch(0.935 0.013 235);
+  --color-text-dark: oklch(0.24 0.02 240);
+  --color-text-mid: oklch(0.48 0.02 235);
+  --color-border: oklch(0.89 0.013 235);
+
+  /* Typography */
+  --font-sans: var(--font-noto-sans-jp), sans-serif;
+  --text-hero: clamp(30px, 7.2vw, 50px);
+  --text-hero--line-height: 1.35;
+  --text-h2: clamp(24px, 4.2vw, 34px);
+  --text-h2--line-height: 1.45;
+
+  /* Radius */
+  --radius-card: 20px;
+
+  /* Shadow (CTAボタン専用) */
+  --shadow-cta: 0 6px 18px oklch(0.7 0.18 45 / 0.28);
+
+  /* Breakpoint: レスポンシブ切り替えは900px基準（デフォルトの md=768px は維持） */
+  --breakpoint-lp-md: 900px;
+
+  /* Hero背景のゆっくりズーム */
+  --animate-slow-zoom: slow-zoom 24s ease-in-out infinite alternate;
+
+  /* キャラクター自己紹介モーダルの表示演出 */
+  --animate-fade-up: fade-up 0.3s ease-out;
+}
+
+@keyframes slow-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/*
+ * キャラクター一覧カードの3Dフリップ演出。
+ * perspective はカード（button）側にインラインで設定し、
+ * ここでは回転する面・背面の非表示制御のみを担う。
+ */
+.character-flip-card {
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.character-flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.character-flip-face-back {
+  transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .character-flip-card {
+    transition: none;
+  }
+}
+
+html {
+  scroll-padding-top: 58px;
+}
+
+@media (min-width: 900px) {
+  html {
+    scroll-padding-top: 72px;
+  }
+}
+
+body {
+  background: var(--color-bg-white);
+  color: var(--color-text-dark);
+}
