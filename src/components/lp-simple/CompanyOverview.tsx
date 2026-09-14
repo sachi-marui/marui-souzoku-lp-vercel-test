@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { company } from "@/data/company";
+import { CompanyOverviewPhoneLink } from "@/components/lp-simple/CompanyOverviewPhoneLink";
 
 /**
  * 簡易LP専用「会社概要」セクション。
@@ -35,12 +36,12 @@ const items: Array<{ label: string; value: ReactNode }> = [
   {
     label: "電話番号",
     value: (
-      <a
+      <CompanyOverviewPhoneLink
         href={company.phoneHref}
         className="font-semibold text-white underline decoration-white/40 underline-offset-2"
       >
         {company.phoneDisplay}
-      </a>
+      </CompanyOverviewPhoneLink>
     ),
   },
   { label: "営業時間", value: company.businessHours },

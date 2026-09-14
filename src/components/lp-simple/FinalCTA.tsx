@@ -1,6 +1,7 @@
 "use client";
 
 import { trackMetaContact } from "@/components/analytics/MetaPixel";
+import { trackContactClick } from "@/components/analytics/GoogleAnalyticsEvents";
 import { CTAButton } from "@/components/ui/CTAButton";
 import { OrganicDivider } from "@/components/ui/OrganicDivider";
 import { company } from "@/data/company";
@@ -57,7 +58,10 @@ export function FinalCTA() {
         <div className="mb-6 flex flex-col items-center gap-3 lp-md:flex-row lp-md:justify-center">
           <CTAButton
             href={company.phoneHref}
-            onClick={trackMetaContact}
+            onClick={() => {
+              trackMetaContact();
+              trackContactClick("tel", "final_cta");
+            }}
             className="w-full whitespace-nowrap lp-md:w-auto"
           >
             ☎ 電話で無料相談する
@@ -66,7 +70,10 @@ export function FinalCTA() {
             href={company.lineUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={trackMetaContact}
+            onClick={() => {
+              trackMetaContact();
+              trackContactClick("line", "final_cta");
+            }}
             variant="secondary"
             className="w-full whitespace-nowrap lp-md:w-auto"
           >
@@ -76,7 +83,10 @@ export function FinalCTA() {
             href={CONTACT_FORM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={trackMetaContact}
+            onClick={() => {
+              trackMetaContact();
+              trackContactClick("form", "final_cta");
+            }}
             className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border-[1.5px] border-primary/40 bg-white px-8 py-4 text-base font-bold text-primary/60 transition-colors duration-200 hover:border-primary/60 hover:bg-bg-pale lp-md:w-auto"
           >
             無料相談フォーム
@@ -85,7 +95,10 @@ export function FinalCTA() {
 
         <a
           href={company.phoneHref}
-          onClick={trackMetaContact}
+          onClick={() => {
+            trackMetaContact();
+            trackContactClick("tel", "final_cta");
+          }}
           className="mb-5 block text-2xl font-black text-primary-dark"
         >
           ☎ {company.phoneDisplay}
