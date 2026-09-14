@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP, Shippori_Mincho, Zen_Kaku_Gothic_New } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import MetaPixel from "@/components/analytics/MetaPixel";
 import "./globals.css";
+
+/** GA4測定ID（プロパティ「丸伊不動産」/ Webデータストリーム「相続」）。 */
+const GA_MEASUREMENT_ID = "G-9JHSVD6L9G";
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
@@ -43,6 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <MetaPixel />
         {children}
       </body>
+      <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
     </html>
   );
 }
