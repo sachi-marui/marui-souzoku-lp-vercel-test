@@ -27,6 +27,7 @@ const zenKakuGothicNew = Zen_Kaku_Gothic_New({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://souzoku.marui-ginowan.co.jp"),
   title: "丸伊不動産｜沖縄で相続した資産の無料相談",
   description:
     "沖縄で相続した実家・土地・軍用地の悩みを無料相談。売却だけでなく、残す・活用する選択肢も一緒に整理します。",
