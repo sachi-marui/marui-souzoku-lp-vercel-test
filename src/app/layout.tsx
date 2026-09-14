@@ -35,6 +35,9 @@ export const metadata: Metadata = {
   title: "丸伊不動産｜沖縄で相続した資産の無料相談",
   description:
     "沖縄で相続した実家・土地・軍用地の悩みを無料相談。売却だけでなく、残す・活用する選択肢も一緒に整理します。",
+  verification: {
+    google: "2mQIyKissbt2bTZ5ZomUsmNbzglsJx8vGkqT-7pPVwI",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
