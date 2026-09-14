@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { trackCtaScrollClick } from "@/components/analytics/GoogleAnalyticsEvents";
 import { CTAButton } from "@/components/ui/CTAButton";
 import { company } from "@/data/company";
 
@@ -92,7 +93,11 @@ export function Hero() {
             </p>
 
             <div className="mt-1">
-              <CTAButton href="#contact" className="w-full lp-md:w-auto">
+              <CTAButton
+                href="#contact"
+                onClick={() => trackCtaScrollClick("hero", "contact")}
+                className="w-full lp-md:w-auto"
+              >
                 選択肢を相談する
               </CTAButton>
             </div>

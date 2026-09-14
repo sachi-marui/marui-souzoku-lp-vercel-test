@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { trackCtaScrollClick } from "@/components/analytics/GoogleAnalyticsEvents";
 import { CTAButton } from "@/components/ui/CTAButton";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -165,7 +168,11 @@ export function AssetChoices() {
           </div>
 
           <div className="mt-8 text-center">
-            <CTAButton href="#contact" className="w-full lp-md:w-auto">
+            <CTAButton
+              href="#contact"
+              onClick={() => trackCtaScrollClick("middle", "contact")}
+              className="w-full lp-md:w-auto"
+            >
               無料相談して選択肢を知る
             </CTAButton>
           </div>

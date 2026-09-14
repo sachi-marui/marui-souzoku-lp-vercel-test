@@ -41,3 +41,25 @@ export function trackContactClick(
     event_location: eventLocation,
   });
 }
+
+/** ヒーローCTA・中間CTAなど、#contactへのアンカースクロールを起点とするCTAの設置位置。 */
+export type CtaScrollPosition = "hero" | "middle";
+
+/**
+ * ヒーローCTA・中間CTAなど、まだ問い合わせ手段（電話/LINE/フォーム）を選ぶ前の
+ * 「相談CTAを押してFinalCTAまで進もうとした」意向のみを計測する補助イベント。
+ *
+ * contact_click（問い合わせ導線クリック）・generate_lead（問い合わせ完了）とは
+ * 別のイベント名（cta_scroll_click）で扱い、混同しない。
+ *
+ * cta_position でCTAの設置位置、destinationでスクロール先を区別する。
+ */
+export function trackCtaScrollClick(
+  ctaPosition: CtaScrollPosition,
+  destination: string,
+) {
+  sendGAEvent("event", "cta_scroll_click", {
+    cta_position: ctaPosition,
+    destination,
+  });
+}
