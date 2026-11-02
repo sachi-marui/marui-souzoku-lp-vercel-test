@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "marui-souzoku-lp",
     "public": "out",
     "cleanUrls": true,
     "trailingSlash": false,
