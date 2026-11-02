@@ -1,9 +1,20 @@
 name: Firebase Hosting
 
-# 常にビルドの確認だけを行う。Firebaseへの公開は、次の2つが両方そろったときだけ(どちらも未設定なら公開されない):
+# 常に「ビルドの確認」を行う(プルリクエストでも同じ。プルリクエストでは公開しない)。
+# Firebaseの本番用サイトへの公開は、次のすべてがそろったときだけ行う(どれかが欠けると公開されない):
+#   - mainへのpush(記事CMSの公開も、mainへのコミットなので、これに当たる)
 #   - リポジトリの変数 FIREBASE_DEPLOY_ENABLED が "true"
-#   - リポジトリのSecret FIREBASE_SERVICE_ACCOUNT とリポジトリの変数 FIREBASE_PROJECT_ID が登録済み
-# 公開はmainへのpushのときだけ(プルリクエストではビルド確認のみ)。
+#   - リポジトリの変数 GCP_WORKLOAD_IDENTITY_PROVIDER と GCP_SERVICE_ACCOUNT が登録済み
+# 認証は、鍵(JSON)を保存しない方式(Workload Identity Federation)。GitHubが発行する短時間の身元証明で、
+# 公開専用のサービスアカウントとして一時的に認証する(Secretは使わない)。
+# Google Cloud側では、このリポジトリのmainブランチ以外からは認証できないように設定する(下の「Google Cloud側の設定」)。
+#
+# Google Cloud側の設定(一度だけ。プロジェクト marui-souzoku-lp。このファイルの動作には、これが前提):
+#   1. 公開専用のサービスアカウントを作る(権限は「Firebase Hosting 管理者」のみ)
+#   2. Workload Identity プールとOIDCプロバイダを作る(発行元 https://token.actions.githubusercontent.com)。
+#      属性条件: assertion.repository == 'sachi-marui/marui-souzoku-lp-vercel-test' && assertion.ref == 'refs/heads/main'
+#   3. 上のサービスアカウントに、このプールの身元(repository属性が上のリポジトリ)から使える権限
+#      (roles/iam.workloadIdentityUser)を付ける
 on:
   push:
     branches: [main]
@@ -17,8 +28,14 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  # 公開先は、この2つに固定する(firebase.json の "site" がこれと違えば、公開しない)。
+  FIREBASE_PROJECT_ID: marui-souzoku-lp
+  EXPECTED_SITE: marui-souzoku-production
+
 jobs:
-  build-and-deploy:
+  build:
+    name: Build check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,10 +46,46 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
-      - name: Deploy to Firebase Hosting
-        if: github.event_name == 'push' && vars.FIREBASE_DEPLOY_ENABLED == 'true'
-        uses: FirebaseExtended/action-hosting-deploy@v0
+
+  deploy:
+    name: Deploy to Firebase Hosting (production site)
+    needs: build
+    # mainへのpushで、かつ公開が有効化されているときだけ動く(プルリクエストでは動かない)。
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.FIREBASE_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # Google Cloudへの鍵なし認証(身元証明の発行)に必要。公開ジョブだけに付ける
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
-          channelId: live
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      # 公開先が本番用サイトに固定されていることを確認する。違う場合(テスト用サイトなど)は、認証の前に止める。
+      - name: Check deploy target is the production site
+        run: |
+          node -e '
+            const fs = require("fs");
+            const expected = process.env.EXPECTED_SITE;
+            const hosting = [].concat(JSON.parse(fs.readFileSync("firebase.json", "utf8")).hosting ?? []);
+            const sites = hosting.map((h) => h.site);
+            if (hosting.length !== 1 || sites[0] !== expected) {
+              console.error("firebase.json の公開先(site)が本番用サイトではありません。期待: " + expected + " / 実際: " + JSON.stringify(sites));
+              process.exit(1);
+            }
+            console.log("公開先(site): " + sites[0]);
+          '
+
+      # 鍵なし認証。成功すると、後続の手順(Firebase CLI)が、この認証情報(ADC)を自動で使う。
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Deploy to Firebase Hosting
+        run: npx --yes firebase-tools@15.34.2 deploy --only hosting --project "$FIREBASE_PROJECT_ID" --non-interactive
