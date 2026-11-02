@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 
-const ANSHIN_PHOTO_SRC = "/images/consultation-dummy.png";
+const ANSHIN_PHOTO_SRC = "/images/consultation-dummy.webp";
 
 /**
  * 写真を柔らかい非対称blob状にマスクするためのclipPath。

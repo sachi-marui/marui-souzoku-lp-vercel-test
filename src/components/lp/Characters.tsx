@@ -150,8 +150,8 @@ export function Characters() {
               <Image
                 src={selected.profileImage}
                 alt={`${selected.name} キャラクター紹介`}
-                width={3240}
-                height={4050}
+                width={1520}
+                height={1900}
                 className="h-auto w-full rounded-card"
                 sizes="(min-width: 900px) 760px, 92vw"
               />

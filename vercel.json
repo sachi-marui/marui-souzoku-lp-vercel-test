@@ -1,0 +1,11 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "marui-souzoku-lp-vercel-test.vercel.app" }],
+      "destination": "https://souzoku.marui-ginowan.co.jp/$1",
+      "permanent": true
+    },
+    { "source": "/", "destination": "/lp/souzoku", "permanent": false }
+  ]
+}

@@ -16,9 +16,9 @@ import { company } from "@/data/company";
  */
 
 const SLIDES = [
-  { src: "/images/hero-house.png", alt: "沖縄で相続した実家" },
-  { src: "/images/hero-land.png", alt: "相続した土地" },
-  { src: "/images/hero-landscape.png", alt: "沖縄の街並みと海" },
+  { src: "/images/hero-house.webp", alt: "沖縄で相続した実家" },
+  { src: "/images/hero-land.webp", alt: "相続した土地" },
+  { src: "/images/hero-landscape.webp", alt: "沖縄の街並みと海" },
 ] as const;
 
 const SLIDE_INTERVAL_MS = 5200;

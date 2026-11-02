@@ -1,0 +1,38 @@
+name: Firebase Hosting
+
+# 常にビルドの確認だけを行う。Firebaseへの公開は、次の2つが両方そろったときだけ(どちらも未設定なら公開されない):
+#   - リポジトリの変数 FIREBASE_DEPLOY_ENABLED が "true"
+#   - リポジトリのSecret FIREBASE_SERVICE_ACCOUNT とリポジトリの変数 FIREBASE_PROJECT_ID が登録済み
+# 公開はmainへのpushのときだけ(プルリクエストではビルド確認のみ)。
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: firebase-hosting-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - name: Deploy to Firebase Hosting
+        if: github.event_name == 'push' && vars.FIREBASE_DEPLOY_ENABLED == 'true'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
+          channelId: live

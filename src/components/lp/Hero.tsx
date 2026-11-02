@@ -20,9 +20,9 @@ const CLIP_BOTTOM_DESKTOP_ID = "hero-bottom-curve-desktop";
 const CLIP_BOTTOM_DESKTOP_D = "M 0,0 L 1,0 L 1,1 C 0.62,0.975 0.30,0.99 0,0.955 Z";
 
 const SLIDES = [
-  { n: "01", src: "/images/hero-house.png", alt: "沖縄で相続した実家", label: "沖縄で相続した実家" },
-  { n: "02", src: "/images/hero-land.png", alt: "相続した土地・空き地", label: "相続した土地・空き地" },
-  { n: "03", src: "/images/hero-landscape.png", alt: "活用方法に迷う土地", label: "活用方法に迷う土地" },
+  { n: "01", src: "/images/hero-house.webp", alt: "沖縄で相続した実家", label: "沖縄で相続した実家" },
+  { n: "02", src: "/images/hero-land.webp", alt: "相続した土地・空き地", label: "相続した土地・空き地" },
+  { n: "03", src: "/images/hero-landscape.webp", alt: "活用方法に迷う土地", label: "活用方法に迷う土地" },
 ] as const;
 
 const SLIDE_INTERVAL_MS = 4400;
