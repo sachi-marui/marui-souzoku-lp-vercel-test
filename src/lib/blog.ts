@@ -65,10 +65,17 @@ export function getLatestArticles(limit = 3): BlogArticle[] {
 /**
  * frontmatterのimageが実際に public/ 配下に存在する場合だけそのパスを返す。
  * ファイルが存在しない場合はnull（壊れた画像表示・404を避けるため）。
+ * ビルド時に作る軽量版（scripts/optimize-blog-images.mjs が作る「<元の名前>.opt.webp」）があれば、そちらを返す。
+ * 軽量版が無い場合（作れなかった・開発中など）は、元の画像をそのまま返す。
  */
 export function resolveArticleImage(article: BlogArticle): string | null {
   if (!article.image) return null;
 
-  const filePath = path.join(process.cwd(), "public", article.image);
-  return fs.existsSync(filePath) ? article.image : null;
+  const publicDir = path.join(process.cwd(), "public");
+  const optimized = article.image.replace(/\.(png|jpe?g)$/i, ".opt.webp");
+  if (optimized !== article.image && fs.existsSync(path.join(publicDir, optimized))) {
+    return optimized;
+  }
+
+  return fs.existsSync(path.join(publicDir, article.image)) ? article.image : null;
 }

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # firebase
 .firebase/
+
+# 記事画像の軽量版（ビルド時に自動生成: scripts/optimize-blog-images.mjs）
+/public/blog/images/*.opt.webp
